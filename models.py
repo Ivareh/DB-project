@@ -59,7 +59,7 @@ class Chair(Model):
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    
+
     class Meta:
         unique_together = ("number", "row", "areaId")
 
@@ -94,6 +94,7 @@ class Ticket(Model):
         related_name="tickets",
         on_delete=fields.SET_NULL,
         on_update=fields.CASCADE,
+        null=True,
     )
     performanceId = fields.ForeignKeyField(
         "models.Performance",
@@ -103,6 +104,12 @@ class Ticket(Model):
     )
     chairId = fields.ForeignKeyField(
         "models.Chair",
+        related_name="tickets",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+    areaId = fields.ForeignKeyField(
+        "models.Area",
         related_name="tickets",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
