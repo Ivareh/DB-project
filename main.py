@@ -15,6 +15,10 @@ register_tortoise(
 )
 
 
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", reload=True)
+
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to TDT4145 Project! Created by Ivar Haugland"}
@@ -720,7 +724,3 @@ async def update_actrole(actrole_id: int, actrole: schemas.ActRoleIn_Pydantic):
     return await schemas.ActRole_Pydantic.from_queryset_single(
         models.ActRole.get(actRoleId=actrole_id)
     )
-
-
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", reload=True)

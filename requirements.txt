@@ -2,3 +2,5 @@ fastapi
 uvicorn
 tortoise
 pydantic
+pandas
+sqlite3
