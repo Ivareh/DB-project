@@ -34,10 +34,11 @@ CREATE TABLE "Area" (
 );
 
 CREATE TABLE "Chair" (
+    chairId INTEGER PRIMARY KEY,
     number INTEGER NOT NULL,
     row INTEGER NOT NULL,
     areaId INTEGER NOT NULL,
-    PRIMARY KEY (number, row, areaId),
+    PRIMARY KEY (chairId),
     FOREIGN KEY (areaId) REFERENCES Area(areaId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -64,8 +65,7 @@ CREATE TABLE "Ticket" (
     ticketId INTEGER PRIMARY KEY,
     purchaseId INTEGER,
     performanceId INTEGER NOT NULL,
-    number INTEGER NOT NULL,
-    row INTEGER NOT NULL,
+    chairId INTEGER NOT NULL,
     areaId INTEGER NOT NULL,
     price REAL NOT NULL,
     FOREIGN KEY (purchaseId) REFERENCES TicketPurchase(purchaseId) ON DELETE
@@ -76,10 +76,10 @@ CREATE TABLE "Ticket" (
 );
 
 CREATE TABLE "Act" (
+    actId INTEGER PRIMARY KEY,
     number INTEGER NOT NULL,
     playId INTEGER NOT NULL,
     name TEXT NOT NULL,
-    PRIMARY KEY (number, playId),
     FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
