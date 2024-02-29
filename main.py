@@ -400,6 +400,45 @@ async def update_ticket(ticket_id: int, ticket: schemas.TicketIn_Pydantic):
     )
 
 
+@app.post("/ticketprices")
+async def create_ticketprice(ticketprice: schemas.TicketPriceIn_Pydantic):
+    ticketprice_obj = await models.TicketPrice.create(
+        **ticketprice.model_dump(exclude_unset=True)
+    )
+    return await schemas.TicketPrice_Pydantic.from_tortoise_orm(ticketprice_obj)
+
+
+@app.get("/ticketprices/{ticketprice_id}")
+async def get_ticketprice(ticketprice_id: int):
+    return await schemas.TicketPrice_Pydantic.from_queryset_single(
+        models.TicketPrice.get(ticketPriceId=ticketprice_id)
+    )
+
+
+@app.get("/ticketprices")
+async def get_all_ticketprices():
+    return await schemas.TicketPrice_Pydantic.from_queryset(models.TicketPrice.all())
+
+
+@app.delete("/ticketprices/{ticketprice_id}")
+async def delete_ticketprice(ticketprice_id: int):
+    ticketprice = await models.TicketPrice.get(ticketPriceId=ticketprice_id)
+    await ticketprice.delete()
+    return {"message": f"TicketPrice with id {ticketprice_id} deleted successfully!"}
+
+
+@app.put("/ticketprices/{ticketprice_id}")
+async def update_ticketprice(
+    ticketprice_id: int, ticketprice: schemas.TicketPriceIn_Pydantic
+):
+    await models.TicketPrice.filter(ticketPriceId=ticketprice_id).update(
+        **ticketprice.model_dump(exclude_unset=True)
+    )
+    return await schemas.TicketPrice_Pydantic.from_queryset_single(
+        models.TicketPrice.get(ticketPriceId=ticketprice_id)
+    )
+
+
 @app.post("/acts")
 async def create_act(act: schemas.ActIn_Pydantic):
     act_obj = await models.Act.create(**act.model_dump(exclude_unset=True))

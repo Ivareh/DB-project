@@ -17,14 +17,15 @@ class Season(Model):
 class Play(Model):
     playId = fields.IntField(pk=True)
     title = fields.CharField(max_length=255, null=False)
-    duration = fields.IntField(null=False)
-    hallId = fields.ForeignKeyField(
+    author = fields.CharField(max_length=255, null=False)
+    duration = fields.CharField(max_length=255, null=False)
+    hall = fields.relational.ForeignKeyField(
         "models.TheaterHall",
         related_name="plays",
         on_delete=fields.RESTRICT,
         on_update=fields.CASCADE,
     )
-    seasonId = fields.ForeignKeyField(
+    season = fields.relational.ForeignKeyField(
         "models.Season",
         related_name="plays",
         on_delete=fields.RESTRICT,
@@ -34,14 +35,25 @@ class Play(Model):
 
 class Performance(Model):
     performanceId = fields.IntField(pk=True)
-    duration = fields.IntField(null=False)
     datetime = fields.DatetimeField(null=False)
+    hall = fields.relational.ForeignKeyField(
+        "models.TheaterHall",
+        related_name="performances",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+    play = fields.relational.ForeignKeyField(
+        "models.Play",
+        related_name="performances",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
 
 
 class Area(Model):
     areaId = fields.IntField(pk=True)
     name = fields.CharField(max_length=255, null=False)
-    hallId = fields.ForeignKeyField(
+    hallId = fields.relational.ForeignKeyField(
         "models.TheaterHall",
         related_name="areas",
         on_delete=fields.CASCADE,
@@ -53,7 +65,7 @@ class Chair(Model):
     chairId = fields.IntField(pk=True)
     number = fields.IntField(null=False)
     row = fields.IntField(null=False)
-    areaId = fields.ForeignKeyField(
+    areaId = fields.relational.ForeignKeyField(
         "models.Area",
         related_name="chairs",
         on_delete=fields.CASCADE,
@@ -79,7 +91,7 @@ class CustomerGroup(Model):
 class TicketPurchase(Model):
     purchaseId = fields.IntField(pk=True)
     datetime = fields.DatetimeField(null=False)
-    customerId = fields.ForeignKeyField(
+    customerId = fields.relational.ForeignKeyField(
         "models.CustomerProfile",
         related_name="purchases",
         on_delete=fields.CASCADE,
@@ -89,39 +101,76 @@ class TicketPurchase(Model):
 
 class Ticket(Model):
     ticketId = fields.IntField(pk=True)
-    purchaseId = fields.ForeignKeyField(
+    purchaseId = fields.relational.ForeignKeyField(
         "models.TicketPurchase",
         related_name="tickets",
         on_delete=fields.SET_NULL,
         on_update=fields.CASCADE,
         null=True,
     )
-    performanceId = fields.ForeignKeyField(
+    performanceId = fields.relational.ForeignKeyField(
         "models.Performance",
         related_name="tickets",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    chairId = fields.ForeignKeyField(
+    chairId = fields.relational.ForeignKeyField(
         "models.Chair",
         related_name="tickets",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    areaId = fields.ForeignKeyField(
+    areaId = fields.relational.ForeignKeyField(
         "models.Area",
         related_name="tickets",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
+    customerGroupId = fields.relational.ForeignKeyField(
+        "models.CustomerGroup",
+        related_name="tickets",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+    playId = fields.relational.ForeignKeyField(
+        "models.Play",
+        related_name="tickets",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+
+
+class TicketPrice(Model):
+    ticketPriceId = fields.IntField(pk=True)
     price = fields.FloatField(null=False)
+    playId = fields.relational.ForeignKeyField(
+        "models.Play",
+        related_name="ticketPrices",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+    groupId = fields.relational.ForeignKeyField(
+        "models.CustomerGroup",
+        related_name="ticketPrices",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+    ticketId = fields.relational.ForeignKeyField(
+        "models.Ticket",
+        related_name="ticketPrices",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("playId", "groupId", "ticketId")
 
 
 class Act(Model):
     actId = fields.IntField(pk=True)
     number = fields.IntField(null=False)
     name = fields.CharField(max_length=255, null=False)
-    playId = fields.ForeignKeyField(
+    playId = fields.relational.ForeignKeyField(
         "models.Play",
         related_name="acts",
         on_delete=fields.CASCADE,
@@ -153,13 +202,13 @@ class Employee(Model):
 
 class ActorRole(Model):
     actorRoleId = fields.IntField(pk=True)
-    actorId = fields.ForeignKeyField(
+    actorId = fields.relational.ForeignKeyField(
         "models.Actor",
         related_name="roles",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    roleId = fields.ForeignKeyField(
+    roleId = fields.relational.ForeignKeyField(
         "models.Role",
         related_name="actors",
         on_delete=fields.CASCADE,
@@ -172,13 +221,13 @@ class ActorRole(Model):
 
 class ActorPlay(Model):
     actorPlayId = fields.IntField(pk=True)
-    actorId = fields.ForeignKeyField(
+    actorId = fields.relational.ForeignKeyField(
         "models.Actor",
         related_name="plays",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    playId = fields.ForeignKeyField(
+    playId = fields.relational.ForeignKeyField(
         "models.Play",
         related_name="actors",
         on_delete=fields.CASCADE,
@@ -191,13 +240,13 @@ class ActorPlay(Model):
 
 class EmployeePlay(Model):
     employeePlayId = fields.IntField(pk=True)
-    employeeId = fields.ForeignKeyField(
+    employeeId = fields.relational.ForeignKeyField(
         "models.Employee",
         related_name="plays",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    playId = fields.ForeignKeyField(
+    playId = fields.relational.ForeignKeyField(
         "models.Play",
         related_name="employees",
         on_delete=fields.CASCADE,
@@ -210,13 +259,13 @@ class EmployeePlay(Model):
 
 class ActRole(Model):
     actRoleId = fields.IntField(pk=True)
-    roleId = fields.ForeignKeyField(
+    roleId = fields.relational.ForeignKeyField(
         "models.Role",
         related_name="acts",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    actId = fields.ForeignKeyField(
+    actId = fields.relational.ForeignKeyField(
         "models.Act",
         related_name="roles",
         on_delete=fields.CASCADE,

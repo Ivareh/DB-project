@@ -13,7 +13,7 @@ CREATE TABLE "Season" (
 CREATE TABLE "Play" (
     playId INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
-    duration INTEGER NOT NULL,
+    duration TEXT NOT NULL,
     seasonId INTEGER NOT NULL,
     hallId INTEGER NOT NULL,
     FOREIGN KEY (seasonId) REFERENCES Season(seasonId) ON DELETE RESTRICT ON UPDATE CASCADE,
