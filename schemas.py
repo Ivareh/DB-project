@@ -58,11 +58,6 @@ TicketIn_Pydantic = pydantic_model_creator(
     models.Ticket, name="TicketIn", exclude_readonly=True
 )
 
-TicketPrice_Pydantic = pydantic_model_creator(models.TicketPrice)
-TicketPriceIn_Pydantic = pydantic_model_creator(
-    models.TicketPrice, name="TicketPriceIn", exclude_readonly=True
-)
-
 Act_Pydantic = pydantic_model_creator(models.Act)
 ActIn_Pydantic = pydantic_model_creator(models.Act, name="ActIn", exclude_readonly=True)
 
