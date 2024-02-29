@@ -59,6 +59,9 @@ class Chair(Model):
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
+    
+    class Meta:
+        unique_together = ("number", "row", "areaId")
 
 
 class CustomerProfile(Model):
