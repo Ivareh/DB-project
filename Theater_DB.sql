@@ -23,7 +23,7 @@ CREATE TABLE "Play" (
 CREATE TABLE "Performance" (
     performanceId INTEGER PRIMARY KEY,
     duration INTEGER NOT NULL,
-    datetime DATETIME NOT NULL,
+    datetime DATETIME NOT NULL
 );
 
 CREATE TABLE "Area" (
