@@ -27,187 +27,102 @@ def get_date_from_file(file_path):
     return dato
 
 
+# Define a mapping for area types to area IDs
+AREA_MAP = {"Galleri": 1, "Balkong": 2, "Parkett": 3}
+
+
 def create_optimal_area_seat_db_dataframe(file_path):
     data = open_file(file_path)
-    lines = data.split("\n")
-    lines = [line for line in lines if line]
+    lines = [line for line in data.split("\n") if line]
+
     date = get_date_from_file(file_path)
-    df = pd.DataFrame(lines, columns=["areaAndSeats"])
-    df = df.drop(0)
 
-    area_seat_columns = ["Galleri", "Balkong", "Parkett"]
+    # Use pd.Series to create the DataFrame directly
+    df = pd.Series(lines[1:], name="areaAndSeats")
+    
+    global AREA_MAP
+    area_map_keys = list(AREA_MAP.keys())
 
-    area_seat_df = pd.DataFrame(None, index=np.arange(10), columns=area_seat_columns)
-
-    area_seat_df = area_seat_df.rename(index=lambda x: f"Row {x}")
-
-    area_seat_df = format_game_scene_areas_seats(
-        df, area_seat_df, "areaAndSeats", area_seat_columns
+    # Create a DataFrame with the specified columns and rows
+    area_seat_df = pd.DataFrame(index=range(10), columns=area_map_keys).rename(
+        index=lambda x: f"Row {x}"
     )
 
-    area_seat_df = area_seat_df.assign(date=date)
+    # Use a function to format the game scene areas and seats
+    area_seat_df = format_game_scene_areas_seats(
+        df, area_seat_df, area_map_keys
+    )
+
+    area_seat_df["date"] = date
     area_seat_df.to_csv("files_needed/area_seat_df.csv", index=False)
 
     return area_seat_df
 
 
 def format_game_scene_areas_seats(
-    df: pd.DataFrame,
+    df: pd.Series,
     new_df: pd.DataFrame,
-    column_name: str,
     column_names: List[str] = None,
 ):
-    numbers, count = [], 0
+    # Invert the series and sort the index
+    df = df[::-1].sort_index(ascending=False)
 
-    for row in df[column_name]:
+    numbers, count = [], 2
+
+    for row in df:
         if row in column_names:
-            new_df[column_names[count - 1]] = numbers + [None] * (10 - len(numbers))
-            count += 1
+            new_df[column_names[count]] = numbers + [None] * (10 - len(numbers))
+            count -= 1
             numbers = []
         else:
             numbers.append(row)
 
-    new_df[column_names[-1]] = numbers + [None] * (10 - len(numbers))
     return new_df
 
 
-def format_gamle_scene_to_db_tables(df: pd.DataFrame):
-    pass
-
-
-# Define a mapping for area types to area IDs
-AREA_MAP = {"Galleri": 1, "Balkong": 2, "Parkett": 3}
-
-
-def add_chairs_to_db(chairsDf: pd.DataFrame, conn: sqlite3.Connection):
-    chairsDf = chairsDf[::-1].sort_index(ascending=False)
-
+def add_chairs_to_db(chairs_df: pd.DataFrame, conn: sqlite3.Connection):
     global AREA_MAP
-    print("REVERTED INDEX")
-    print(chairsDf)
 
     purchased_chairs = []
-    for index, row in chairsDf.iterrows():
-        row_number = index[-1]
+
+    for index, row in chairs_df.iterrows():
+        row_number = int(index[-1]) + 1  # Add 1 to row number to start from 1
+
         for areaType, chairRowNumbers in row.items():
             if areaType == "date" or not chairRowNumbers:
                 continue
 
-            # print(
-            #     f"Area Type={areaType} : Chair Row Numbers={chairRowNumbers} : Row Number={row_number}"
-            # )
+            # Use enumerate to simplify iteration and access to both index and value
+            for chair, seat_status in enumerate(chairRowNumbers, start=1):
+                chair_id = f"1_{areaType}_{row_number}_{chair}"
 
-            # TODO: NOT DONE
-            for chair in range(len(chairRowNumbers)):
-                # print(chair)
-                chair_id = f"1_{areaType}_{row_number}{chair}"
-                if int(chairRowNumbers[chair]) == 1:
-                    purchased_chairs.append(
-                        {"chair": chair_id, "area_id": AREA_MAP[areaType]}
-                    )
-                # print(chairRowNumbers, type(chairRowNumbers))
-                # print(chairRowNumbers[chair], type(chairRowNumbers[chair]))
-                # print(f"{(chair_id, chairRowNumbers[chair], int(row_number), AREA_MAP[areaType], 1)}")
+                if int(seat_status) == 1:
+                    purchased_chairs.append(chair_id)
+
                 dbuc.create_chair(
-                    conn, (chair_id, chair, int(row_number), AREA_MAP[areaType], 1)
+                    conn, (chair_id, chair, row_number, AREA_MAP[areaType], 1)
                 )
 
-    # def add_chairs_to_db(chairsDf: pd.DataFrame, conn: sqlite3.Connection):
-
-    #     chairsDf.iloc[:] = chairsDf.iloc[::-1].values
-
-    #     df_reverted_index = chairsDf.sort_index(ascending=False)
-
-    #     print("REVERTED INDEX")
-    #     print(df_reverted_index)
-    #     df_revert_double = pd.DataFrame(index=df_reverted_index.index[::-1])
-    #     df_revert_double["Galleri"] = df_reverted_index["Galleri"].values
-    #     df_revert_double["Balkong"] = df_reverted_index["Balkong"].values
-    #     df_revert_double["Parkett"] = df_reverted_index["Parkett"].values
-
-    #     print(df_revert_double)
-    #     purchased_chairs = []
-    #     for index, row in df_revert_double.iterrows():
-    #         row_number = index[-1]
-    #         for areaType, chairRowNumbers in zip(row.index, row):
-    #             if areaType == "date":
-    #                 continue
-    #             print(
-    #                 "Area Type="
-    #                 + str(areaType)
-    #                 + " : Chair Row Numbers="
-    #                 + str(chairRowNumbers)
-    #                 + " : Row Number="
-    #                 + str(row_number)
-    #             )
-    #             if chairRowNumbers:
-
-    #                 for chair in range(len(chairRowNumbers)):
-    #                     print(chair)
-    #                     int_chair = int(chair)
-    #                     if int_chair == 0 or int_chair == 1:
-    #                         if areaType == "Galleri":
-    #                             chair_id = "1_Galleri_" + str(row_number) + str(chair)
-    #                             if int_chair == 1:
-    #                                 purchased_chairs.append(
-    #                                     {
-    #                                         "chair": chair_id,
-    #                                         "area_id": 1,
-    #                                     }
-    #                                 )
-    #                             print(chairRowNumbers, type(chairRowNumbers))
-    #                             print(chair, type(chair))
-    #                             print(f"{(chair, int(row_number), 1, 1)}")
-    #                             dbuc.create_chair(
-    #                                 conn, (chair_id, chair, int(row_number), 1, 1)
-    #                             )  # 1, 1 is the area_id and hall_id (Galleri, Gamle Scene)
-    #                         elif areaType == "Balkong":
-    #                             chair_id = "1_Balkong_" + str(row_number) + str(chair)
-    #                             if int_chair == 1:
-    #                                 purchased_chairs.append(
-    #                                     {
-    #                                         "chair": chair_id,
-    #                                         "area_id": 2,
-    #                                     }
-    #                                 )
-    #                             dbuc.create_chair(
-    #                                 conn, (chair_id, chair, row_number, 2, 1)
-    #                             )  # 2, 1 is the area_id and hall_id (Balkong, Gamle Scene)
-    #                         elif areaType == "Parkett":
-    #                             chair_id = "1_Parkett_" + str(row_number) + str(chair)
-    #                             if int_chair == 1:
-    #                                 purchased_chairs.append(
-    #                                     {
-    #                                         "chair": chair_id,
-    #                                         "area_id": 3,
-    #                                     }
-    #                                 )
-    #                             dbuc.create_chair(
-    #                                 conn, (chair_id, chair, row_number, 3, 1)
-    #                             )  # 3, 1 is the area_id and hall_id (Parkett, Gamle Scene)
-
-    print("PURCHASED CHAIRS: ", purchased_chairs)
     add_purchased_chairs_to_db(purchased_chairs, conn)
-
-    # duc.create_chair(conn, (chair, index, 1, 1))
-    # area_id = row["area_id"]
-    # hall_id = row["hall_id"]
-    # number = row["number"]
-    # row = row["row"]
-    # duc.create_chair(conn, (number, row, area_id, hall_id))
 
 
 def add_purchased_chairs_to_db(purchased_chairs: List[dict], conn: sqlite3.Connection):
+
+    # Create ticket for performance 6 and 3 on 3rd of February 2023
+    ticket_performance_1_03022024 = (100, 1, 1, 6, 1)
+    ticket_performance_2_03022024 = (101, 1, 1, 3, 1)
+    dbuc.create_ticket_with_id(conn, ticket_performance_1_03022024)
+    dbuc.create_ticket_with_id(conn, ticket_performance_2_03022024)
+
     for chair in purchased_chairs:
-        dbuc.create_ticket_chair(conn, (chair["chair"], chair["area_id"]))
+        dbuc.create_ticket_chair(conn, (100, chair))
+        dbuc.create_ticket_chair(conn, (101, chair))
 
 
 if __name__ == "__main__":
     conn = dbuc.create_connection("db.sqlite3")
 
     data = open_file("files_needed/gamle-scene.txt")
-
-    # add_data_to_sqlite_db('files_needed/gamle-scene.txt', 'gamle-scene.db')
 
     chairs = create_optimal_area_seat_db_dataframe("files_needed/gamle-scene.txt")
     add_chairs_to_db(chairs, conn)

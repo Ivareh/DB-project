@@ -129,8 +129,6 @@ if __name__ == "__main__":
 
     ticket_purchase = ("2022-01-01 14:00:00", 1)
 
-    ticket = (1, 1, 1, 1)
-
     # Customer Profile
     customer_sjukingen_profile = ("Sjukingen", "Elgesetergate 1", "12345678")
 
@@ -203,8 +201,6 @@ if __name__ == "__main__":
     )
 
     dbuc.create_ticket_purchase(conn, ticket_purchase)
-
-    dbuc.create_ticket(conn, ticket)
 
     dbuc.create_customer_group(conn, ordinary_customer_group)
     dbuc.create_customer_group(conn, honour_customer_group)

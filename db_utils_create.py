@@ -106,6 +106,15 @@ def create_ticket(conn, ticket):
     return cur.lastrowid
 
 
+def create_ticket_with_id(conn, ticket):
+    sql = """ INSERT INTO ticket(ticket_id, ticketPrice_id, purchase_id, performance_id, area_id)
+              VALUES(?,?,?,?,?) """
+    cur = conn.cursor()
+    cur.execute(sql, ticket)
+    conn.commit()
+    return cur.lastrowid
+
+
 def create_ticket_chair(conn, ticket_chair):
     sql = """ INSERT INTO ticketChair(chair_id, ticket_id)
               VALUES(?,?) """
