@@ -61,9 +61,12 @@ class Area(Model):
         on_update=fields.CASCADE,
     )
 
+    class Meta:
+        unique_together = ("name", "hall_id")
+
 
 class Chair(Model):
-    chair_id = fields.IntField(pk=True)
+    chair_id = fields.CharField(pk=True, max_length=255)
     number = fields.IntField(null=False)
     row = fields.IntField(null=False)
     area = fields.ForeignKeyField(
@@ -80,7 +83,7 @@ class Chair(Model):
     )
 
     class Meta:
-        unique_together = ("number", "row", "area_id")
+        unique_together = ("number", "row", "area_id", "hall_id")
 
 
 class CustomerProfile(Model):
@@ -106,17 +109,30 @@ class TicketPurchase(Model):
     )
 
 
-class Ticket(Model):
-    ticket_id = fields.IntField(pk=True)
+class TicketPrice(Model):
+    ticketPrice_id = fields.IntField(pk=True)
     price = fields.FloatField(null=False)
     play = fields.ForeignKeyField(
         "models.Play",
-        related_name="tickets",
+        related_name="prices",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
     group = fields.ForeignKeyField(
         "models.CustomerGroup",
+        related_name="prices",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("group_id", "play_id")
+
+
+class Ticket(Model):
+    ticket_id = fields.IntField(pk=True)
+    ticketPrice = fields.ForeignKeyField(
+        "models.TicketPrice",
         related_name="tickets",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
@@ -134,18 +150,31 @@ class Ticket(Model):
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
-    chair = fields.ForeignKeyField(
-        "models.Chair",
-        related_name="tickets",
-        on_delete=fields.CASCADE,
-        on_update=fields.CASCADE,
-    )
     area = fields.ForeignKeyField(
         "models.Area",
         related_name="tickets",
         on_delete=fields.CASCADE,
         on_update=fields.CASCADE,
     )
+
+
+class TicketChair(Model):
+    ticketChair_id = fields.IntField(pk=True)
+    ticket = fields.ForeignKeyField(
+        "models.Ticket",
+        related_name="chairs",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+    chair = fields.ForeignKeyField(
+        "models.Chair",
+        related_name="tickets",
+        on_delete=fields.CASCADE,
+        on_update=fields.CASCADE,
+    )
+
+    class Meta:
+        unique_together = ("ticket_id", "chair_id")
 
 
 class Act(Model):

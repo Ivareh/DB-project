@@ -60,6 +60,15 @@ CREATE TABLE "TicketPurchase" (
     FOREIGN KEY (customerId) REFERENCES CustomerProfile(customerId) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE "TicketPrice" (
+    price REAL NOT NULL,
+    groupId INTEGER NOT NULL,
+    playId INTEGER NOT NULL,
+    FOREIGN KEY (groupId) REFERENCES CustomerGroup(groupId) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY (price, groupId, playId)
+);
+
 CREATE TABLE "Ticket" (
     ticketId INTEGER PRIMARY KEY,
     purchaseId INTEGER,

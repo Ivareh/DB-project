@@ -58,6 +58,11 @@ TicketIn_Pydantic = pydantic_model_creator(
     models.Ticket, name="TicketIn", exclude_readonly=True
 )
 
+TicketChair_Pydantic = pydantic_model_creator(models.TicketChair)
+TicketChairIn_Pydantic = pydantic_model_creator(
+    models.TicketChair, name="TicketChairIn", exclude_readonly=True
+)
+
 Act_Pydantic = pydantic_model_creator(models.Act)
 ActIn_Pydantic = pydantic_model_creator(models.Act, name="ActIn", exclude_readonly=True)
 
