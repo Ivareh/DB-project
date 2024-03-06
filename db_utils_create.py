@@ -80,6 +80,14 @@ def create_customer_group(conn, customer_group):
 
 
 def create_chair(conn, chair):
+    sql = """ INSERT INTO chair(number, row, area_id, hall_id)
+              VALUES(?,?,?,?) """
+    cur = conn.cursor()
+    cur.execute(sql, chair)
+    conn.commit()
+    return cur.lastrowid
+
+def create_chair_with_id(conn, chair):
     sql = """ INSERT INTO chair(chair_id, number, row, area_id, hall_id)
               VALUES(?,?,?,?,?) """
     cur = conn.cursor()
