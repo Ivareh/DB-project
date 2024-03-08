@@ -1,148 +1,164 @@
 CREATE TABLE "TheaterHall" (
-    hallId INTEGER PRIMARY KEY,
+    hall_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     capacity INTEGER NOT NULL
 );
 
 CREATE TABLE "Season" (
-    seasonId INTEGER PRIMARY KEY,
+    season_id INTEGER PRIMARY KEY,
     season TEXT NOT NULL,
     year INTEGER NOT NULL
 );
 
 CREATE TABLE "Play" (
-    playId INTEGER PRIMARY KEY,
+    play_id INTEGER PRIMARY KEY,
     title TEXT NOT NULL,
-    duration TEXT NOT NULL,
-    seasonId INTEGER NOT NULL,
-    hallId INTEGER NOT NULL,
-    FOREIGN KEY (seasonId) REFERENCES Season(seasonId) ON DELETE RESTRICT ON UPDATE CASCADE,
-    FOREIGN KEY (hallId) REFERENCES TheaterHall(hallId) ON DELETE RESTRICT ON UPDATE CASCADE
+    author TEXT NOT NULL,
+    description TEXT,
+    season_id INTEGER NOT NULL,
+    hall_id INTEGER NOT NULL,
+    FOREIGN KEY (season_id) REFERENCES Season(season_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    FOREIGN KEY (hall_id) REFERENCES TheaterHall(hall_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE "Performance" (
-    performanceId INTEGER PRIMARY KEY,
-    duration INTEGER NOT NULL,
-    datetime DATETIME NOT NULL
+    performance_id INTEGER PRIMARY KEY,
+    datetime DATETIME NOT NULL,
+    play_id INTEGER NOT NULL,
+    hall_id INTEGER NOT NULL,
+    FOREIGN KEY (play_id) REFERENCES Play(play_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (hall_id) REFERENCES TheaterHall(hall_id) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE "Area" (
-    areaId INTEGER PRIMARY KEY,
+    area_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    hallId INTEGER NOT NULL,
-    FOREIGN KEY (hallId) REFERENCES TheaterHall(hallId) ON DELETE CASCADE ON UPDATE CASCADE
+    hall_id INTEGER NOT NULL,
+    FOREIGN KEY (hall_id) REFERENCES TheaterHall(hall_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (name, hall_id)
 );
 
 CREATE TABLE "Chair" (
-    chairId INTEGER PRIMARY KEY,
+    chair_id INTEGER PRIMARY KEY,
     number INTEGER NOT NULL,
     row INTEGER NOT NULL,
-    areaId INTEGER NOT NULL,
-    FOREIGN KEY (areaId) REFERENCES Area(areaId) ON DELETE CASCADE ON UPDATE CASCADE
+    area_id INTEGER NOT NULL,
+    hall_id INTEGER NOT NULL,
+    FOREIGN KEY (area_id) REFERENCES Area(area_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (hall_id) REFERENCES TheaterHall(hall_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (number, row, area_id, hall_id)
 );
 
 CREATE TABLE "CustomerProfile" (
-    customerId INTEGER PRIMARY KEY,
+    customer_id INTEGER PRIMARY KEY,
+    userName TEXT NOT NULL,
     name TEXT NOT NULL,
     address TEXT NOT NULL,
-    phone TEXT NOT NULL
+    phone TEXT NOT NULL,
+    UNIQUE (userName)
 );
 
 CREATE TABLE "CustomerGroup" (
-    groupId INTEGER PRIMARY KEY,
+    group_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL
 );
 
 CREATE TABLE "TicketPurchase" (
-    purchaseId INTEGER PRIMARY KEY,
+    purchase_id INTEGER PRIMARY KEY,
     datetime DATETIME NOT NULL,
-    customerId INTEGER NOT NULL,
-    FOREIGN KEY (customerId) REFERENCES CustomerProfile(customerId) ON DELETE CASCADE ON UPDATE CASCADE
+    customer_id INTEGER NOT NULL,
+    FOREIGN KEY (customer_id) REFERENCES CustomerProfile(customer_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "TicketPrice" (
+    ticketPrice_id INTEGER PRIMARY KEY,
     price REAL NOT NULL,
-    groupId INTEGER NOT NULL,
-    playId INTEGER NOT NULL,
-    FOREIGN KEY (groupId) REFERENCES CustomerGroup(groupId) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE,
-    PRIMARY KEY (price, groupId, playId)
+    group_id INTEGER NOT NULL,
+    play_id INTEGER NOT NULL,
+    FOREIGN KEY (group_id) REFERENCES CustomerGroup(group_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (play_id) REFERENCES Play(play_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (group_id, play_id)
 );
 
 CREATE TABLE "Ticket" (
-    ticketId INTEGER PRIMARY KEY,
-    purchaseId INTEGER,
-    performanceId INTEGER NOT NULL,
-    chairId INTEGER NOT NULL,
-    areaId INTEGER NOT NULL,
-    price REAL NOT NULL,
-    groupId INTEGER NOT NULL,
-    playId INTEGER NOT NULL,
-    FOREIGN KEY (purchaseId) REFERENCES TicketPurchase(purchaseId) ON DELETE
-    SET
-        NULL ON UPDATE CASCADE,
-        FOREIGN KEY (performanceId) REFERENCES Performance(performanceId) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (chairId) REFERENCES Chair(chairId) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (areaId) REFERENCES Area(areaId) ON DELETE CASCADE ON UPDATE CASCADE FOREIGN KEY (groupId) REFERENCES CustomerGroup(groupId) ON DELETE CASCADE ON UPDATE CASCADE,
-        FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE
+    ticket_id INTEGER PRIMARY KEY,
+    purchase_id INTEGER,
+    performance_id INTEGER NOT NULL,
+    chair_id INTEGER NOT NULL,
+    area_id INTEGER NOT NULL,
+    ticketPrice_id INTEGER NOT NULL,
+    FOREIGN KEY (purchase_id) REFERENCES TicketPurchase(purchase_id) ON DELETE SET NULL ON UPDATE CASCADE,
+    FOREIGN KEY (performance_id) REFERENCES Performance(performance_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (chair_id) REFERENCES Chair(chair_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (area_id) REFERENCES Area(area_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ticketPrice_id) REFERENCES TicketPrice(ticketPrice_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "Act" (
-    actId INTEGER PRIMARY KEY,
+    act_id INTEGER PRIMARY KEY,
     number INTEGER NOT NULL,
-    name TEXT NOT NULL,
-    playId INTEGER NOT NULL,
-    FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE
+    name TEXT,
+    play_id INTEGER NOT NULL,
+    FOREIGN KEY (play_id) REFERENCES Play(play_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (number, play_id)
 );
 
 CREATE TABLE "Role" (
-    roleId INTEGER PRIMARY KEY,
-    name TEXT NOT NULL
+    role_id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    play_id INTEGER NOT NULL,
+    FOREIGN KEY (play_id) REFERENCES Play(play_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "Actor" (
-    actorId INTEGER PRIMARY KEY,
-    name TEXT NOT NULL,
-    email TEXT NOT NULL,
-    status TEXT NOT NULL
-);
-
-CREATE TABLE "Employee" (
-    employeeId INTEGER PRIMARY KEY,
+    actor_id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     email TEXT NOT NULL,
     status TEXT NOT NULL,
-    position TEXT NOT NULL
+    description TEXT
+);
+
+CREATE TABLE "Employee" (
+    employee_id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT NOT NULL,
+    status TEXT NOT NULL,
+    description TEXT,
+    task TEXT NOT NULL
 );
 
 CREATE TABLE "ActorRole" (
-    actorId INTEGER NOT NULL,
-    roleId INTEGER NOT NULL,
-    PRIMARY KEY (actorId, roleId),
-    FOREIGN KEY (actorId) REFERENCES Actor(actorId) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (roleId) REFERENCES Role(roleId) ON DELETE CASCADE ON UPDATE CASCADE
+    actorRole_id INTEGER PRIMARY KEY,
+    actor_id INTEGER NOT NULL,
+    role_id INTEGER NOT NULL,
+    FOREIGN KEY (actor_id) REFERENCES Actor(actor_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES Role(role_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (actor_id, role_id)
 );
 
 CREATE TABLE "ActorPlay" (
-    actorId INTEGER NOT NULL,
-    playId INTEGER NOT NULL,
-    PRIMARY KEY (actorId, playId),
-    FOREIGN KEY (actorId) REFERENCES Actor(actorId) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE
+    actorPlay_id INTEGER PRIMARY KEY,
+    actor_id INTEGER NOT NULL,
+    play_id INTEGER NOT NULL,
+    FOREIGN KEY (actor_id) REFERENCES Actor(actor_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (play_id) REFERENCES Play(play_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (actor_id, play_id)
 );
 
 CREATE TABLE "EmployeePlay" (
-    employeeId INTEGER NOT NULL,
-    playId INTEGER NOT NULL,
-    PRIMARY KEY (employeeId, playId),
-    FOREIGN KEY (employeeId) REFERENCES Employee(employeeId) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (playId) REFERENCES Play(playId) ON DELETE CASCADE ON UPDATE CASCADE
+    employeePlay_id INTEGER PRIMARY KEY,
+    employee_id INTEGER NOT NULL,
+    play_id INTEGER NOT NULL,
+    FOREIGN KEY (employee_id) REFERENCES Employee(employee_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (play_id) REFERENCES Play(play_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (employee_id, play_id)
 );
 
 CREATE TABLE "ActRole" (
-    actId INTEGER NOT NULL,
-    roleId INTEGER NOT NULL,
-    PRIMARY KEY (actId, roleId),
-    FOREIGN KEY (actId) REFERENCES Act(actId) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (roleId) REFERENCES Role(roleId) ON DELETE CASCADE ON UPDATE CASCADE
+    actRole_id INTEGER PRIMARY KEY,
+    act_id INTEGER NOT NULL,
+    role_id INTEGER NOT NULL,
+    FOREIGN KEY (act_id) REFERENCES Act(act_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (role_id) REFERENCES Role(role_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    UNIQUE (act_id, role_id)
 );
