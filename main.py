@@ -240,133 +240,156 @@ async def update_chair(chair_id: int, chair: schemas.ChairIn_Pydantic):
     )
 
 
-@app.post("/customerprofiles")
-async def create_customerprofile(customerprofile: schemas.CustomerProfileIn_Pydantic):
-    customerprofile_obj = await models.CustomerProfile.create(
-        **customerprofile.model_dump(exclude_unset=True)
+@app.post("/customer_profiles")
+async def create_customer_profile(customer_profile: schemas.CustomerProfileIn_Pydantic):
+    customer_profile_obj = await models.CustomerProfile.create(
+        **customer_profile.model_dump(exclude_unset=True)
     )
-    return await schemas.CustomerProfile_Pydantic.from_tortoise_orm(customerprofile_obj)
+    return await schemas.CustomerProfile_Pydantic.from_tortoise_orm(
+        customer_profile_obj
+    )
 
 
-@app.get("/customerprofiles/{customerprofile_id}")
-async def get_customerprofile(customerprofile_id: int):
+@app.get("/customer_profiles/{customer_id}")
+async def get_customer_profile(customer_id: int):
     return await schemas.CustomerProfile_Pydantic.from_queryset_single(
-        models.CustomerProfile.get(customerId=customerprofile_id)
+        models.CustomerProfile.get(customerId=customer_id)
     )
 
 
-@app.get("/customerprofiles")
-async def get_all_customerprofiles():
+@app.get("/customer_profiles")
+async def get_all_customer_profiles():
     return await schemas.CustomerProfile_Pydantic.from_queryset(
         models.CustomerProfile.all()
     )
 
 
-@app.delete("/customerprofiles/{customerprofile_id}")
-async def delete_customerprofile(customerprofile_id: int):
-    customerprofile = await models.CustomerProfile.get(customerId=customerprofile_id)
-    await customerprofile.delete()
-    return {
-        "message": f"CustomerProfile with id {customerprofile_id} deleted successfully!"
-    }
+@app.delete("/customer_profiles/{customer_id}")
+async def delete_customer_profile(customer_id: int):
+    customer_profile = await models.CustomerProfile.get(customerId=customer_id)
+    await customer_profile.delete()
+    return {"message": f"CustomerProfile with id {customer_id} deleted successfully!"}
 
 
-@app.put("/customerprofiles/{customerprofile_id}")
-async def update_customerprofile(
-    customerprofile_id: int, customerprofile: schemas.CustomerProfileIn_Pydantic
+@app.put("/customer_profiles/{customer_id}")
+async def update_customer_profile(
+    customer_id: int, customer_profile: schemas.CustomerProfileIn_Pydantic
 ):
-    await models.CustomerProfile.filter(customerId=customerprofile_id).update(
-        **customerprofile.model_dump(exclude_unset=True)
+    await models.CustomerProfile.filter(customerId=customer_id).update(
+        **customer_profile.model_dump(exclude_unset=True)
     )
     return await schemas.CustomerProfile_Pydantic.from_queryset_single(
-        models.CustomerProfile.get(customerId=customerprofile_id)
+        models.CustomerProfile.get(customerId=customer_id)
     )
 
 
-@app.post("/customergroups")
-async def create_customergroup(customergroup: schemas.CustomerGroupIn_Pydantic):
-    customergroup_obj = await models.CustomerGroup.create(
-        **customergroup.model_dump(exclude_unset=True)
+@app.post("/customer_groups")
+async def create_customer_group(customer_group: schemas.CustomerGroupIn_Pydantic):
+    customer_group_obj = await models.CustomerGroup.create(
+        **customer_group.model_dump(exclude_unset=True)
     )
-    return await schemas.CustomerGroup_Pydantic.from_tortoise_orm(customergroup_obj)
+    return await schemas.CustomerGroup_Pydantic.from_tortoise_orm(customer_group_obj)
 
 
-@app.get("/customergroups/{customergroup_id}")
-async def get_customergroup(customergroup_id: int):
+@app.get("/customer_groups/{group_id}")
+async def get_customer_group(group_id: int):
     return await schemas.CustomerGroup_Pydantic.from_queryset_single(
-        models.CustomerGroup.get(groupId=customergroup_id)
+        models.CustomerGroup.get(groupId=group_id)
     )
 
 
-@app.get("/customergroups")
-async def get_all_customergroups():
+@app.get("/customer_groups")
+async def get_all_customer_groups():
     return await schemas.CustomerGroup_Pydantic.from_queryset(
         models.CustomerGroup.all()
     )
 
 
-@app.delete("/customergroups/{customergroup_id}")
-async def delete_customergroup(customergroup_id: int):
-    customergroup = await models.CustomerGroup.get(groupId=customergroup_id)
-    await customergroup.delete()
-    return {
-        "message": f"CustomerGroup with id {customergroup_id} deleted successfully!"
-    }
+@app.delete("/customer_groups/{group_id}")
+async def delete_customer_group(group_id: int):
+    customer_group = await models.CustomerGroup.get(groupId=group_id)
+    await customer_group.delete()
+    return {"message": f"CustomerGroup with id {group_id} deleted successfully!"}
 
 
-@app.put("/customergroups/{customergroup_id}")
-async def update_customergroup(
-    customergroup_id: int, customergroup: schemas.CustomerGroupIn_Pydantic
+@app.put("/customer_groups/{group_id}")
+async def update_customer_group(
+    group_id: int, customer_group: schemas.CustomerGroupIn_Pydantic
 ):
-    await models.CustomerGroup.filter(groupId=customergroup_id).update(
-        **customergroup.model_dump(exclude_unset=True)
+    await models.CustomerGroup.filter(groupId=group_id).update(
+        **customer_group.model_dump(exclude_unset=True)
     )
     return await schemas.CustomerGroup_Pydantic.from_queryset_single(
-        models.CustomerGroup.get(groupId=customergroup_id)
+        models.CustomerGroup.get(groupId=group_id)
     )
 
 
-@app.post("/ticketpurchases")
-async def create_ticketpurchase(ticketpurchase: schemas.TicketPurchaseIn_Pydantic):
-    ticketpurchase_obj = await models.TicketPurchase.create(
-        **ticketpurchase.model_dump(exclude_unset=True)
+@app.post("/ticket_purchases")
+async def create_ticket_purchase(ticket_purchase: schemas.TicketPurchaseIn_Pydantic):
+    ticket_purchase_obj = await models.TicketPurchase.create(
+        **ticket_purchase.model_dump(exclude_unset=True)
     )
-    return await schemas.TicketPurchase_Pydantic.from_tortoise_orm(ticketpurchase_obj)
+    return await schemas.TicketPurchase_Pydantic.from_tortoise_orm(ticket_purchase_obj)
 
 
-@app.get("/ticketpurchases/{ticketpurchase_id}")
-async def get_ticketpurchase(ticketpurchase_id: int):
+@app.get("/ticket_purchases/{purchase_id}")
+async def get_ticket_purchase(purchase_id: int):
     return await schemas.TicketPurchase_Pydantic.from_queryset_single(
-        models.TicketPurchase.get(purchaseId=ticketpurchase_id)
+        models.TicketPurchase.get(purchaseId=purchase_id)
     )
 
 
-@app.get("/ticketpurchases")
-async def get_all_ticketpurchases():
+@app.get("/ticket_purchases")
+async def get_all_ticket_purchases():
     return await schemas.TicketPurchase_Pydantic.from_queryset(
         models.TicketPurchase.all()
     )
 
 
-@app.delete("/ticketpurchases/{ticketpurchase_id}")
-async def delete_ticketpurchase(ticketpurchase_id: int):
-    ticketpurchase = await models.TicketPurchase.get(purchaseId=ticketpurchase_id)
-    await ticketpurchase.delete()
-    return {
-        "message": f"TicketPurchase with id {ticketpurchase_id} deleted successfully!"
-    }
+@app.delete("/ticket_purchases/{purchase_id}")
+async def delete_ticket_purchase(purchase_id: int):
+    ticket_purchase = await models.TicketPurchase.get(purchaseId=purchase_id)
+    await ticket_purchase.delete()
+    return {"message": f"TicketPurchase with id {purchase_id} deleted successfully!"}
 
 
-@app.put("/ticketpurchases/{ticketpurchase_id}")
-async def update_ticketpurchase(
-    ticketpurchase_id: int, ticketpurchase: schemas.TicketPurchaseIn_Pydantic
+@app.put("/ticket_purchases/{purchase_id}")
+async def update_ticket_purchase(
+    purchase_id: int, ticket_purchase: schemas.TicketPurchaseIn_Pydantic
 ):
-    await models.TicketPurchase.filter(purchaseId=ticketpurchase_id).update(
-        **ticketpurchase.model_dump(exclude_unset=True)
+    await models.TicketPurchase.filter(purchaseId=purchase_id).update(
+        **ticket_purchase.model_dump(exclude_unset=True)
     )
     return await schemas.TicketPurchase_Pydantic.from_queryset_single(
-        models.TicketPurchase.get(purchaseId=ticketpurchase_id)
+        models.TicketPurchase.get(purchaseId=purchase_id)
     )
+
+
+@app.post("/ticket_prices")
+async def create_ticket_price(ticket_price: schemas.TicketPriceIn_Pydantic):
+    ticket_price_obj = await models.TicketPrice.create(
+        **ticket_price.model_dump(exclude_unset=True)
+    )
+    return await schemas.TicketPrice_Pydantic.from_tortoise_orm(ticket_price_obj)
+
+
+@app.get("/ticket_prices/{price_id}")
+async def get_ticket_price(price_id: int):
+    return await schemas.TicketPrice_Pydantic.from_queryset_single(
+        models.TicketPrice.get(priceId=price_id)
+    )
+
+
+@app.get("/ticket_prices")
+async def get_all_ticket_prices():
+    return await schemas.TicketPrice_Pydantic.from_queryset(models.TicketPrice.all())
+
+
+@app.delete("/ticket_prices/{price_id}")
+async def delete_ticket_price(price_id: int):
+    ticket_price = await models.TicketPrice.get(priceId=price_id)
+    await ticket_price.delete()
+    return {"message": f"TicketPrice with id {price_id} deleted successfully!"}
 
 
 @app.post("/tickets")
@@ -540,148 +563,154 @@ async def update_employee(employee_id: int, employee: schemas.EmployeeIn_Pydanti
     )
 
 
-@app.post("/actorroles")
-async def create_actorrole(actorrole: schemas.ActorRoleIn_Pydantic):
-    actorrole_obj = await models.ActorRole.create(
-        **actorrole.model_dump(exclude_unset=True)
+@app.post("/actor_roles")
+async def create_actor_role(actor_role: schemas.ActorRoleIn_Pydantic):
+    actor_role_obj = await models.ActorRole.create(
+        **actor_role.model_dump(exclude_unset=True)
     )
-    return await schemas.ActorRole_Pydantic.from_tortoise_orm(actorrole_obj)
+    return await schemas.ActorRole_Pydantic.from_tortoise_orm(actor_role_obj)
 
 
-@app.get("/actorroles/{actorrole_id}")
-async def get_actorrole(actorrole_id: int):
+@app.get("/actor_roles/{actorRole_id}")
+async def get_actor_role(actorRole_id: int):
     return await schemas.ActorRole_Pydantic.from_queryset_single(
-        models.ActorRole.get(actorRoleId=actorrole_id)
+        models.ActorRole.get(actorRoleId=actorRole_id)
     )
 
 
-@app.get("/actorroles")
-async def get_all_actorroles():
+@app.get("/actor_roles")
+async def get_all_actor_roles():
     return await schemas.ActorRole_Pydantic.from_queryset(models.ActorRole.all())
 
 
-@app.delete("/actorroles/{actorrole_id}")
-async def delete_actorrole(actorrole_id: int):
-    actorrole = await models.ActorRole.get(actorRoleId=actorrole_id)
-    await actorrole.delete()
-    return {"message": f"ActorRole with id {actorrole_id} deleted successfully!"}
+@app.delete("/actor_roles/{actorRole_id}")
+async def delete_actor_role(actorRole_id: int):
+    actor_role = await models.ActorRole.get(actorRoleId=actorRole_id)
+    await actor_role.delete()
+    return {"message": f"ActorRole with id {actorRole_id} deleted successfully!"}
 
 
-@app.put("/actorroles/{actorrole_id}")
-async def update_actorrole(actorrole_id: int, actorrole: schemas.ActorRoleIn_Pydantic):
-    await models.ActorRole.filter(actorRoleId=actorrole_id).update(
-        **actorrole.model_dump(exclude_unset=True)
+@app.put("/actor_roles/{actorRole_id}")
+async def update_actor_role(
+    actorRole_id: int, actor_role: schemas.ActorRoleIn_Pydantic
+):
+    await models.ActorRole.filter(actorRoleId=actorRole_id).update(
+        **actor_role.model_dump(exclude_unset=True)
     )
     return await schemas.ActorRole_Pydantic.from_queryset_single(
-        models.ActorRole.get(actorRoleId=actorrole_id)
+        models.ActorRole.get(actorRoleId=actorRole_id)
     )
 
 
-@app.post("/actorplays")
-async def create_actorplay(actorplay: schemas.ActorPlayIn_Pydantic):
-    actorplay_obj = await models.ActorPlay.create(
-        **actorplay.model_dump(exclude_unset=True)
+@app.post("/actor_plays")
+async def create_actor_play(actor_play: schemas.ActorPlayIn_Pydantic):
+    actor_play_obj = await models.ActorPlay.create(
+        **actor_play.model_dump(exclude_unset=True)
     )
-    return await schemas.ActorPlay_Pydantic.from_tortoise_orm(actorplay_obj)
+    return await schemas.ActorPlay_Pydantic.from_tortoise_orm(actor_play_obj)
 
 
-@app.get("/actorplays/{actorplay_id}")
-async def get_actorplay(actorplay_id: int):
+@app.get("/actor_plays/{actorPlay_id}")
+async def get_actor_play(actorPlay_id: int):
     return await schemas.ActorPlay_Pydantic.from_queryset_single(
-        models.ActorPlay.get(actorPlayId=actorplay_id)
+        models.ActorPlay.get(actorPlayId=actorPlay_id)
     )
 
 
-@app.get("/actorplays")
-async def get_all_actorplays():
+@app.get("/actor_plays")
+async def get_all_actor_plays():
     return await schemas.ActorPlay_Pydantic.from_queryset(models.ActorPlay.all())
 
 
-@app.delete("/actorplays/{actorplay_id}")
-async def delete_actorplay(actorplay_id: int):
-    actorplay = await models.ActorPlay.get(actorPlayId=actorplay_id)
-    await actorplay.delete()
+@app.delete("/actor_plays/{actorPlay_id}")
+async def delete_actor_play(actorPlay_id: int):
+    actor_play = await models.ActorPlay.get(actorPlayId=actorPlay_id)
+    await actor_play.delete()
 
 
-@app.put("/actorplays/{actorplay_id}")
-async def update_actorplay(actorplay_id: int, actorplay: schemas.ActorPlayIn_Pydantic):
-    await models.ActorPlay.filter(actorPlayId=actorplay_id).update(
-        **actorplay.model_dump(exclude_unset=True)
+@app.put("/actor_plays/{actorPlay_id}")
+async def update_actor_play(
+    actorPlay_id: int, actor_play: schemas.ActorPlayIn_Pydantic
+):
+    await models.ActorPlay.filter(actorPlayId=actorPlay_id).update(
+        **actor_play.model_dump(exclude_unset=True)
     )
     return await schemas.ActorPlay_Pydantic.from_queryset_single(
-        models.ActorPlay.get(actorPlayId=actorplay_id)
+        models.ActorPlay.get(actorPlayId=actorPlay_id)
     )
 
 
-@app.post("/employeeplays")
-async def create_employeeplay(employeeplay: schemas.EmployeePlayIn_Pydantic):
-    employeeplay_obj = await models.EmployeePlay.create(
-        **employeeplay.model_dump(exclude_unset=True)
+@app.post("/employee_plays")
+async def create_employee_play(employee_play: schemas.EmployeePlayIn_Pydantic):
+    employee_play_obj = await models.EmployeePlay.create(
+        **employee_play.model_dump(exclude_unset=True)
     )
-    return await schemas.EmployeePlay_Pydantic.from_tortoise_orm(employeeplay_obj)
+    return await schemas.EmployeePlay_Pydantic.from_tortoise_orm(employee_play_obj)
 
 
-@app.get("/employeeplays/{employeeplay_id}")
-async def get_employeeplay(employeeplay_id: int):
+@app.get("/employee_plays/{employeePlay_id}")
+async def get_employee_play(employeePlay_id: int):
     return await schemas.EmployeePlay_Pydantic.from_queryset_single(
-        models.EmployeePlay.get(employeePlayId=employeeplay_id)
+        models.EmployeePlay.get(employeePlayId=employeePlay_id)
     )
 
 
-@app.get("/employeeplays")
-async def get_all_employeeplays():
+@app.get("/employee_plays")
+async def get_all_employee_plays():
     return await schemas.EmployeePlay_Pydantic.from_queryset(models.EmployeePlay.all())
 
 
-@app.delete("/employeeplays/{employeeplay_id}")
-async def delete_employeeplay(employeeplay_id: int):
-    employeeplay = await models.EmployeePlay.get(employeePlayId=employeeplay_id)
-    await employeeplay.delete()
-    return {"message": f"EmployeePlay with id {employeeplay_id} deleted successfully!"}
+@app.delete("/employee_plays/{employeePlay_id}")
+async def delete_employee_play(employeePlay_id: int):
+    employee_play = await models.EmployeePlay.get(employeePlayId=employeePlay_id)
+    await employee_play.delete()
+    return {"message": f"EmployeePlay with id {employeePlay_id} deleted successfully!"}
 
 
-@app.put("/employeeplays/{employeeplay_id}")
-async def update_employeeplay(
-    employeeplay_id: int, employeeplay: schemas.EmployeePlayIn_Pydantic
+@app.put("/employee_plays/{employeePlay_id}")
+async def update_employee_play(
+    employeePlay_id: int, employee_play: schemas.EmployeePlayIn_Pydantic
 ):
-    await models.EmployeePlay.filter(employeePlayId=employeeplay_id).update(
-        **employeeplay.model_dump(exclude_unset=True)
+    await models.EmployeePlay.filter(employeePlayId=employeePlay_id).update(
+        **employee_play.model_dump(exclude_unset=True)
     )
     return await schemas.EmployeePlay_Pydantic.from_queryset_single(
-        models.EmployeePlay.get(employeePlayId=employeeplay_id)
+        models.EmployeePlay.get(employeePlayId=employeePlay_id)
     )
 
 
-@app.post("/actroles")
-async def create_actrole(actrole: schemas.ActRoleIn_Pydantic):
-    actrole_obj = await models.ActRole.create(**actrole.model_dump(exclude_unset=True))
-    return await schemas.ActRole_Pydantic.from_tortoise_orm(actrole_obj)
+@app.post("/act_roles")
+async def create_act_role(act_role: schemas.ActRoleIn_Pydantic):
+    act_role_obj = await models.ActRole.create(
+        **act_role.model_dump(exclude_unset=True)
+    )
+    return await schemas.ActRole_Pydantic.from_tortoise_orm(act_role_obj)
 
 
-@app.get("/actroles/{actrole_id}")
-async def get_actrole(actrole_id: int):
+@app.get("/act_roles/{actRole_id}")
+async def get_act_role(actRole_id: int):
     return await schemas.ActRole_Pydantic.from_queryset_single(
-        models.ActRole.get(actRoleId=actrole_id)
+        models.ActRole.get(actRoleId=actRole_id)
     )
 
 
-@app.get("/actroles")
-async def get_all_actroles():
+@app.get("/act_roles")
+async def get_all_act_roles():
     return await schemas.ActRole_Pydantic.from_queryset(models.ActRole.all())
 
 
-@app.delete("/actroles/{actrole_id}")
-async def delete_actrole(actrole_id: int):
-    actrole = await models.ActRole.get(actRoleId=actrole_id)
-    await actrole.delete()
-    return {"message": f"ActRole with id {actrole_id} deleted successfully!"}
+@app.delete("/act_roles/{actRole_id}")
+async def delete_act_role(actRole_id: int):
+    act_role = await models.ActRole.get(actRoleId=actRole_id)
+    await act_role.delete()
+    return {"message": f"ActRole with id {actRole_id} deleted successfully!"}
 
 
-@app.put("/actroles/{actrole_id}")
-async def update_actrole(actrole_id: int, actrole: schemas.ActRoleIn_Pydantic):
-    await models.ActRole.filter(actRoleId=actrole_id).update(
-        **actrole.model_dump(exclude_unset=True)
+@app.put("/act_roles/{actRole_id}")
+async def update_act_role(actRole_id: int, act_role: schemas.ActRoleIn_Pydantic):
+    await models.ActRole.filter(actRoleId=actRole_id).update(
+        **act_role.model_dump(exclude_unset=True)
     )
     return await schemas.ActRole_Pydantic.from_queryset_single(
-        models.ActRole.get(actRoleId=actrole_id)
+        models.ActRole.get(actRoleId=actRole_id)
     )

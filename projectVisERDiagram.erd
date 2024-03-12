@@ -120,7 +120,7 @@
 </entity>
 <entity id="82" is_weak="false" name="TicketPrice" x="677" y="376">
 <attributes>
-<attribute is_hidden="false" is_key="true" name="ticketPrice_id" type=""/>
+<attribute is_hidden="false" is_key="true" name="price_id" type=""/>
 <attribute is_hidden="false" is_key="false" name="price" type=""/>
 </attributes>
 </entity>

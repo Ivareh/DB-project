@@ -71,7 +71,7 @@ CREATE TABLE "TicketPurchase" (
 );
 
 CREATE TABLE "TicketPrice" (
-    ticketPrice_id INTEGER PRIMARY KEY,
+    price_id INTEGER PRIMARY KEY,
     price REAL NOT NULL,
     group_id INTEGER NOT NULL,
     play_id INTEGER NOT NULL,

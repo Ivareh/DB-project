@@ -110,7 +110,7 @@ class TicketPurchase(Model):
 
 
 class TicketPrice(Model):
-    ticketPrice_id = fields.IntField(pk=True)
+    price_id = fields.IntField(pk=True)
     price = fields.FloatField(null=False)
     group_id = fields.ForeignKeyField(
         "models.CustomerGroup",
