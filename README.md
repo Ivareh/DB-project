@@ -12,7 +12,7 @@ Written with Python and SQLite3
 Activate a python environment:
 
 1. `python -m venv venv`
-2. `source activate`
+2. `source venv/Scripts/activate`
 3. `pip install -r requirements.txt`
 
 

@@ -3,4 +3,3 @@ uvicorn
 tortoise
 pydantic
 pandas
-sqlite3
