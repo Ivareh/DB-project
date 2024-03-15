@@ -37,41 +37,36 @@ def get_date_from_file(file_path: str):
         raise ValueError(f"No date found in file {file_path}")
     return dato
 
-
+# Read the file and create chairs in the database
 def read_and_create_chairs(
     conn, file_path: str, *, performances, hall_id: int, reset_lines: bool = False
 ):
     data = open_file(file_path)
-    date = get_date_from_file(file_path)
-    # print(date)
     lines = [line for line in data.split("\n") if line][
         1:
     ]  # [1:] means to remove the date line in beginning
 
+    # Inverse the order of the rows in the areas, because the first row in the file is the top row
     areas_with_rows = inverse_area_with_rows(lines)
-    # print(areas_with_rows)
 
+    # Create the chairs in the database
     chair_number = 1
     row_number = 1
     current_area = None
     for area_row in areas_with_rows:
-        # print(area_row_number, area_row)
-        if not has_numbers(area_row):
+        if not has_numbers(area_row): # If the line does not contain numbers, it is an area
             current_area = area_row
             row_number = 1
         else:
             if reset_lines:
                 chair_number = 1
-            # print("current_area", current_area)
             for chair in area_row:
-                # print("chair", chair)
                 chair_id = f"{chair_number}_{row_number}_{current_area}_{hall_id}"
-                # print(chair_id)
                 area_id = get_area_id_from_area_name(conn, current_area, hall_id)
-                if chair == "x":
+                if chair == "x": # If the chair is marked as "x" in the file, there is no chair
                     chair_number += 1
                     continue
-                elif chair == "1":
+                elif chair == "1": # If the chair is marked as "1" in the file, it is a purchased chair
                     create_purchased_chair(
                         conn,
                         chair=(
@@ -83,14 +78,12 @@ def read_and_create_chairs(
                         ),
                         performances=performances,
                     )
-                elif chair == "0":
+                elif chair == "0": # If the chair is marked as "0" in the file, it is a chair that is not purchased
                     create_chair_with_id(
                         conn, (chair_id, chair_number, row_number, area_id, hall_id)
                     )
 
-                # print("hey")
                 chair_number += 1
-                # print("chair_number", chair_number)
             row_number += 1
 
 
@@ -102,20 +95,12 @@ def inverse_area_with_rows(lines):
             areas_with_rows.append([area_row])
         else:
             areas_with_rows[-1].append(area_row)
-    # print(areas_with_rows)
     for index, area_with_row in enumerate(areas_with_rows):
         area = area_with_row[0]
-        area_with_row = area_with_row[1:][::-1]
-        areas_with_rows[index] = [area] + area_with_row
-    # After inverse except for the first element
-    # print(areas_with_rows)
-    flatten_areas_with_rows = []
-    for area_row in areas_with_rows:
-        for row in area_row:
-            # print(row)
-            flatten_areas_with_rows.append(row)
-    # print(flatten_areas_with_rows)
-    # print(flatten_areas_with_rows)
+        area_with_row = area_with_row[1:][::-1] # Reverse the order of the rows except the first row (area)
+        areas_with_rows[index] = [area] + area_with_row # Add the area to the beginning of the list
+    # Flatten the list of areas with rows to original format
+    flatten_areas_with_rows = [row for area_row in areas_with_rows for row in area_row]
     return flatten_areas_with_rows
 
 
@@ -125,46 +110,20 @@ def create_purchased_chair(
     chair: Tuple,
     performances: List[Tuple],
 ):
-    create_chair_with_id(conn, chair)
+    create_chair_with_id(conn, chair) # Create the chair in the database
 
-    random_ticket_purchase_id = get_random_ticket_purchase_id(conn)
-    random_ticket_price_id = get_random_ticket_price_id(conn)
+    random_ticket_purchase_id = get_random_ticket_purchase_id(conn) # Get a random ticket purchase id
+    random_ticket_price_id = get_random_ticket_price_id(conn) # Get a random ticket price id
 
-    performance_ids = [performance[0] for performance in performances]
+    performance_ids = [performance[0] for performance in performances] # Get the performance ids
 
-    # create_ticket(1,)
+    # Create a ticket for each performance
     for performance_id in performance_ids:
         ticket = (
             random_ticket_purchase_id,
             performance_id,
-            chair[0],
-            chair[3],
+            chair[0], # chair_id for the purchased chair
+            chair[3], # area_id for the purchased chair
             random_ticket_price_id,
         )
         create_ticket(conn, ticket)
-
-
-# def main():
-#     conn = create_connection("db.sqlite3")
-
-#     date = get_date_from_file("files_needed/gamle-scene.txt")
-
-#     performances_gamle_scene = get_performances_by_hall_and_date(conn, 2, date)
-
-#     read_and_create_chairs(
-#         conn,
-#         "files_needed/gamle-scene.txt",
-#         performances=performances_gamle_scene,
-#         hall_id=2,
-#         reset_lines=True,
-#     )
-
-#     # hall = 2
-
-#     # print(get_performances_by_hall_and_date(conn, hall, date))
-#     # print(get_random_ticket_purchase_id(conn))
-#     # print(get_random_ticket_price_id(conn))
-
-
-# if __name__ == "__main__":
-#     main()

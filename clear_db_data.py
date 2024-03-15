@@ -2,7 +2,7 @@ import sqlite3
 
 # Created with AI with prompt "How in python for sqlite3 database, clear data from all tables?"
 
-def clear_data_from_all_tables(database_path = "db.sqlite3"):
+def clear_data_from_all_tables(database_path = "theater.db"):
     # Connect to the SQLite database
     connection = sqlite3.connect(database_path)
     cursor = connection.cursor()
@@ -30,4 +30,4 @@ def clear_data_from_all_tables(database_path = "db.sqlite3"):
         connection.close()
 
 # Replace 'your_database.db' with the path to your SQLite database file
-clear_data_from_all_tables("db.sqlite3")
+clear_data_from_all_tables("theater.db")

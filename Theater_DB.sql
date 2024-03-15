@@ -86,12 +86,12 @@ CREATE TABLE "Ticket" (
     performance_id INTEGER NOT NULL,
     chair_id INTEGER NOT NULL,
     area_id INTEGER NOT NULL,
-    ticketPrice_id INTEGER NOT NULL,
+    price_id INTEGER NOT NULL,
     FOREIGN KEY (purchase_id) REFERENCES TicketPurchase(purchase_id) ON DELETE SET NULL ON UPDATE CASCADE,
     FOREIGN KEY (performance_id) REFERENCES Performance(performance_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (chair_id) REFERENCES Chair(chair_id) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY (area_id) REFERENCES Area(area_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    FOREIGN KEY (ticketPrice_id) REFERENCES TicketPrice(ticketPrice_id) ON DELETE CASCADE ON UPDATE CASCADE
+    FOREIGN KEY (price_id) REFERENCES TicketPrice(price_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE "Act" (
