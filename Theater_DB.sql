@@ -39,7 +39,7 @@ CREATE TABLE "Area" (
 );
 
 CREATE TABLE "Chair" (
-    chair_id INTEGER PRIMARY KEY,
+    chair_id TEXT PRIMARY KEY,
     number INTEGER NOT NULL,
     row INTEGER NOT NULL,
     area_id INTEGER NOT NULL,
