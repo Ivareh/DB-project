@@ -1,4 +1,5 @@
-import db_utils_create as dbuc
+import db_utils as dbuc
+import db_connection as dbcon
 
 from format_files_needed import (
     add_gamle_scene_chairs_to_db,
@@ -6,7 +7,7 @@ from format_files_needed import (
 
 
 if __name__ == "__main__":
-    conn = dbuc.create_connection("db.sqlite3")
+    conn = dbcon.create_connection("db.sqlite3")
 
     area_map = {"Galleri": 1, "Balkong": 2, "Parkett": 3}
 

@@ -51,7 +51,7 @@ CREATE TABLE "Chair" (
 
 CREATE TABLE "CustomerProfile" (
     customer_id INTEGER PRIMARY KEY,
-    userName TEXT NOT NULL,
+    userName TEXT UNIQUE NOT NULL,
     name TEXT NOT NULL,
     address TEXT NOT NULL,
     phone TEXT NOT NULL,

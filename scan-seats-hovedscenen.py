@@ -1,4 +1,4 @@
-import db_utils_create as dbuc
+import db_utils as dbuc
 
 from format_files_needed import (
     add_hovedscenen_chairs_to_db,

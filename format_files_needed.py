@@ -3,7 +3,7 @@ import sqlite3
 import pandas as pd
 from typing import Dict, List
 
-import db_utils_create as dbuc
+import db_utils as dbuc
 
 
 # Open the file and read the data
@@ -138,7 +138,7 @@ def add_gamle_scene_chairs_to_db(
     )
     add_purchased_chairs_to_db(total_purchased_chairs, conn)
 
-    add_purchased_chairs_to_db(purchased_chairs, conn)
+    # add_purchased_chairs_to_db(purchased_chairs, conn)
 
 
 def add_hovedscenen_chairs_to_db(
