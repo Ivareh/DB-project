@@ -1,4 +1,4 @@
-import db_utils as dbuc
+import db_utils_query as dbuq
 import db_connection as dbcon
 
 from read_from_files_needed import get_date_from_file, read_and_create_chairs
@@ -9,7 +9,7 @@ if __name__ == "__main__":
 
     date = get_date_from_file("files_needed/hovedscenen.txt")
 
-    performances_mainscene = dbuc.get_performances_by_hall_and_date(
+    performances_mainscene = dbuq.get_performances_by_hall_and_date(
         conn, hall_id=1, date=date
     )
 

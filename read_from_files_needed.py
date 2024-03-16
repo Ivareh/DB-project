@@ -2,9 +2,12 @@
 from typing import List, Tuple
 import pandas as pd
 
-from db_utils import (
+from db_utils_create import (
     create_chair_with_id,
     create_ticket,
+)
+
+from db_utils_query import (
     get_area_id_from_area_name,
     get_random_ticket_price_id,
     get_random_ticket_purchase_id,

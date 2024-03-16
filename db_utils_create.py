@@ -73,16 +73,6 @@ def create_performance_with_id(conn, performance):
     return cur.lastrowid
 
 
-def get_performances_by_hall_and_date(conn, hall_id, date):
-    sql = """ SELECT * FROM performance 
-                WHERE hall_id = ? 
-                AND 
-                datetime LIKE '%' || ? || '%'"""
-    cur = conn.cursor()
-    cur.execute(sql, (hall_id, date))
-    return cur.fetchall()
-
-
 def create_area(conn, area):
     sql = """ INSERT INTO area(name, hall_id)
               VALUES(?,?) """
@@ -99,14 +89,6 @@ def create_area_with_id(conn, area):
     cur.execute(sql, area)
     conn.commit()
     return cur.lastrowid
-
-
-def get_area_id_from_area_name(conn, area_name, hall_id):
-    sql = """ SELECT area_id FROM area 
-              WHERE name = ? AND hall_id = ? """
-    cur = conn.cursor()
-    cur.execute(sql, (area_name, hall_id))
-    return cur.fetchone()[0]
 
 
 def create_chair(conn, chair):
@@ -181,14 +163,6 @@ def create_ticket_purchase_with_id(conn, ticket_purchase):
     return cur.lastrowid
 
 
-def get_random_ticket_purchase_id(conn):
-    sql = """ SELECT purchase_id FROM ticketPurchase
-              ORDER BY RANDOM() LIMIT 1 """
-    cur = conn.cursor()
-    cur.execute(sql)
-    return cur.fetchone()[0]
-
-
 def create_ticket_price(conn, ticket_price):
     sql = """ INSERT INTO ticketPrice(price, group_id, play_id)
               VALUES(?,?,?) """
@@ -205,14 +179,6 @@ def create_ticket_price_with_id(conn, ticket_price):
     cur.execute(sql, ticket_price)
     conn.commit()
     return cur.lastrowid
-
-
-def get_random_ticket_price_id(conn):
-    sql = """ SELECT price_id FROM ticketPrice
-              ORDER BY RANDOM() LIMIT 1 """
-    cur = conn.cursor()
-    cur.execute(sql)
-    return cur.fetchone()[0]
 
 
 def create_ticket(conn, ticket):
