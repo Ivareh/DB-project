@@ -1,6 +1,4 @@
-# db_project_2024
-TDT4145 Database project 2024
-
+# DB Project (practice)
 
 Written with Python and SQLite3
 
